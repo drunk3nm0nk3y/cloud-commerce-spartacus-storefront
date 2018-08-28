@@ -15,19 +15,12 @@ import {
 import { effects } from './store/effects/index';
 import { ConfigService, StorageSyncType } from './config.service';
 
-// not used in production
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { storeFreeze } from 'ngrx-store-freeze';
-
 export function getMetaReducers(config: ConfigService): MetaReducer<any>[] {
   const metaReducers: MetaReducer<any>[] = [];
   if (config.storageSyncType !== StorageSyncType.NO_STORAGE) {
     const storageSyncReducer = getStorageSyncReducer(config);
     metaReducers.push(storageSyncReducer);
   }
-
-  metaReducers.push(storeFreeze); // Should not be used in production (SPA-488)
-
   return metaReducers;
 }
 
@@ -35,8 +28,7 @@ export function getMetaReducers(config: ConfigService): MetaReducer<any>[] {
   imports: [
     StoreModule.forRoot(reducerToken),
     EffectsModule.forRoot(effects),
-    StoreRouterConnectingModule,
-    StoreDevtoolsModule.instrument() // Should not be used in production (SPA-488)
+    StoreRouterConnectingModule
   ],
   providers: [
     reducerProvider,

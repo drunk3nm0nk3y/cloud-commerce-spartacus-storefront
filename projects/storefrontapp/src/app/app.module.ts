@@ -4,6 +4,8 @@ import { LOCALE_ID } from '@angular/core';
 
 import { ConfigService } from './config.service';
 import { AppRoutingModule } from './app-routing.module';
+import { META_REDUCERS, MetaReducer } from '@ngrx/store';
+import { environment } from '../environments/environment';
 
 import {
   AuthModule,
@@ -19,6 +21,9 @@ import {
 // bootstrap
 import { AppComponent } from './app.component';
 
+import { storeFreeze } from 'ngrx-store-freeze';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -32,7 +37,8 @@ import { AppComponent } from './app.component';
     CmsLibModule,
     CmsModule.forRoot(ConfigService),
     UiModule,
-    UiFrameworkModule
+    UiFrameworkModule,
+    environment.production ? [] : StoreDevtoolsModule.instrument()
   ],
 
   providers: [
@@ -41,6 +47,15 @@ import { AppComponent } from './app.component';
       // TODO: configure locale
       provide: LOCALE_ID,
       useValue: 'en-US'
+    },
+    {
+      provide: META_REDUCERS,
+      useFactory: () => {
+        const metaReducers: MetaReducer<any>[] = [];
+        if (!environment.production) {
+          metaReducers.push(storeFreeze);
+        }
+      }
     }
   ],
   declarations: [AppComponent],
