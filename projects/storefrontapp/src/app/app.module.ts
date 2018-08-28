@@ -55,6 +55,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
         if (!environment.production) {
           metaReducers.push(storeFreeze);
         }
+        return metaReducers;
       }
     }
   ],
